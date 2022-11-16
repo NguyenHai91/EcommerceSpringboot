@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head th:replace="customer/fragments::head"></head>
+
+<body class="animsition">
+
+<!-- Header -->
+<header th:replace="customer/fragments::header"></header>
+
+<section class="login main container p-4">
+  <div class="row ">
+    <div class="col-4"></div>
+    <div class="col-4 mx-auto ">
+      <form th:action="@{/login}" th:method="POST" th:object="${userDto}" class="login-form form">
+        <div class="title text-center">Login</div>
+        <div class="form-outline mt-5">
+          <input class="form-control email" th:field="*{username}" type="email" placeholder="email" />
+        </div>
+        <div class="form-outline mt-2">
+          <input class="form-control password" th:field="*{password}" type="password" placeholder="password" />
+        </div>
+
+        <div class="mt-2">
+          <p class="message-form small"></p>
+        </div>
+        <div class="cover-btn-login mt-2 d-flex justify-content-end">
+          <button class="btn-login btn btn-primary" type="submit">submit</button>
+        </div>
+        <div>
+          <a class="small link link-register mt-2" th:href="@{/register/}">Register an account</a>
+        </div>
+      </form>
+    </div>
+    <div class="col-4"></div>
+  </div>
+</section>
+
+
+<!-- Footer -->
+<footer th:replace="customer/fragments::footer"></footer>
+
+<!-- Back to top -->
+<div th:replace="customer/fragments::back_top"></div>
+
+<!-- Script -->
+<div th:replace="customer/fragments::script"></div>
+
+
+</body>
+</html>
