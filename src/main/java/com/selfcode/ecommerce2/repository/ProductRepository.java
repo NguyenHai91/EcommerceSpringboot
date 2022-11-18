@@ -21,10 +21,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
   @Query("select p from Product p where p.is_actived = true and p.is_deleted = false")
   List<Product> getAllProducts();
 
-  @Query(value = "select * from product p where p.is_actived = true and p.is_deleted = false order by rand() asc limit 6", nativeQuery = true)
+  @Query(value = "select * from products p where p.is_actived = true and p.is_deleted = false order by rand() asc limit 6", nativeQuery = true)
   List<Product> listViewProducts();
 
-  @Query(value = "select * from product p inner join category c on c.id = p.category_id where p.category_id = ?1 order by p.id desc limit 12", nativeQuery = true)
+  @Query(value = "select * from products p inner join category c on c.id = p.category_id where p.category_id = ?1 order by p.id desc limit 12", nativeQuery = true)
   List<Product> getRelatedProducts(Long categoryId);
 
   @Query("select p from Product p where p.category.id = ?1")

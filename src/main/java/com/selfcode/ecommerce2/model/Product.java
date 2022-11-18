@@ -1,18 +1,17 @@
 package com.selfcode.ecommerce2.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "product", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "image"}))
+@Table(name = "products", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "image"}))
 
 public class Product {
   @Id
