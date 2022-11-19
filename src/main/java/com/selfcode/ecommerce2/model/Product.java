@@ -2,6 +2,7 @@ package com.selfcode.ecommerce2.model;
 
 
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
@@ -39,8 +40,6 @@ public class Product {
 
   private boolean is_actived;
 
-  @Lob
-  @Column(columnDefinition = "MEDIUMBLOB")
   private String image;
 
   @OneToMany(mappedBy = "product")

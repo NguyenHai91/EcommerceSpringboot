@@ -82,7 +82,7 @@
                   <td th:text="${product.salePrice}"></td>
                   <td th:text="${product.costPrice}"></td>
                   <td th:text="${product.currentQuantity}"></td>
-                  <td ><img style="height: 40px; width: 40px;" th:src = "*{'data:image/jpeg;base64,' + {product.image}}"></td>
+                  <td ><img style="height: 40px; width: 40px;" th:src = "*{'/customer/images/' + {product.image}}"></td>
                   <td th:text="${product.actived}"></td>
                   <td th:text="${product.deleted}"></td>
                   <td>

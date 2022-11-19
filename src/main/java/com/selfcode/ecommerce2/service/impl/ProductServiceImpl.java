@@ -74,7 +74,8 @@ public class ProductServiceImpl implements ProductService {
         if (imageUpload.uploadImage(UPLOAD_PATH_PRODUCT, imageProduct)) {
           System.out.println("Upload image success");
         }
-        newProduct.setImage(Base64.getEncoder().encodeToString(imageProduct.getBytes()));
+//        newProduct.setImage(Base64.getEncoder().encodeToString(imageProduct.getBytes()));
+        newProduct.setImage(imageProduct.getOriginalFilename());
       }
 
       newProduct.setName(productDto.getName());
@@ -101,7 +102,8 @@ public class ProductServiceImpl implements ProductService {
             System.out.println("Upload image success");
           }
           ImageProduct img = new ImageProduct();
-          img.setName(Base64.getEncoder().encodeToString(image.getBytes()));
+//          img.setName(Base64.getEncoder().encodeToString(image.getBytes()));
+          img.setName(image.getName());
           img.setProduct(newProduct);
           imageProductRepository.save(img);
         }
@@ -155,7 +157,8 @@ public class ProductServiceImpl implements ProductService {
           imageUpload.uploadImage(UPLOAD_PATH_PRODUCT, imageProduct);
           System.out.println("Upload image success");
         }
-        product.setImage(Base64.getEncoder().encodeToString(imageProduct.getBytes()));
+//        product.setImage(Base64.getEncoder().encodeToString(imageProduct.getBytes()));
+        product.setImage(imageProduct.getName());
       }
 
       if (extraImages != null) {
@@ -164,7 +167,8 @@ public class ProductServiceImpl implements ProductService {
             System.out.println("Upload image success");
           }
           ImageProduct img = new ImageProduct();
-          img.setName(Base64.getEncoder().encodeToString(image.getBytes()));
+//          img.setName(Base64.getEncoder().encodeToString(image.getBytes()));
+          img.setName(image.getName());
           img.setProduct(product);
           imageProductRepository.save(img);
         }

@@ -20,8 +20,12 @@ public class HomeAdminController {
   @GetMapping("/admin")
   public String index(Model model, Principal principal) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-      return "redirect:/admin/login";
+//    if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+//      return "redirect:/login";
+//    }
+    
+    if (principal == null) {
+      return "redirect:/login";
     }
     model.addAttribute("title", "Categories");
     model.addAttribute("username", principal.getName());

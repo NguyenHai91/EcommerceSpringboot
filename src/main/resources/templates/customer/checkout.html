@@ -108,7 +108,7 @@
                 <tr class="table_row" th:if="${cart.cartItem}" th:each="item : ${cart.cartItem}">
                   <td class="column-1 p-2">
                     <div class="how-itemcart1">
-                      <img th:src="@{'data:image/jpeg;base64,' + ${item.product.image}}" alt="IMG">
+                      <img th:src="@{'/customer/images/' + ${item.product.image}}" alt="IMG">
                     </div>
                   </td>
                   <td class="column-2 p-2" th:text="${item.product.name}"></td>

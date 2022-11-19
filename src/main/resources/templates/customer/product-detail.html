@@ -22,12 +22,12 @@
 							<div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
 
 							<div class="slick3 gallery-lb">
-								<div class="item-slick3" th:data-thumb="@{'data:image/jpeg;base64,' + ${product.image}}">
+								<div class="item-slick3" th:data-thumb="@{'/customer/images/' + ${product.image}}">
 									<div class="wrap-pic-w pos-relative">
-										<img th:src="@{'data:image/jpeg;base64,' + ${product.image}}" alt="img">
+										<img th:src="@{'/customer/images/' + ${product.image}}" alt="img">
 
 										<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-											 th:href="@{'data:image/jpeg;base64,' + ${product.image}}">
+											 th:href="@{'/customer/images/' + ${product.image}}">
 											<i class="fa fa-expand"></i>
 										</a>
 									</div>
@@ -35,12 +35,12 @@
 
 								<div class="item-slick3"
 										 th:each="image: ${product.listImages}"
-										 th:data-thumb="@{'data:image/jpeg;base64,' + ${image}}">
+										 th:data-thumb="@{'/customer/images/' + ${image}}">
 									<div class="wrap-pic-w pos-relative">
-										<img th:src="@{'data:image/jpeg;base64,' + ${image}}" alt="img">
+										<img th:src="@{'/customer/images/' + ${image}}" alt="img">
 
 										<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-											 th:href="@{'data:image/jpeg;base64,' + ${image}}">
+											 th:href="@{'/customer/images/' + ${image}}">
 											<i class="fa fa-expand"></i>
 										</a>
 									</div>
@@ -351,7 +351,7 @@
 						<!-- Block2 -->
 						<div class="block2">
 							<div class="block2-pic hov-img0">
-								<img th:src="@{'data:image/jpeg;base64,' + ${item.image}}" alt="IMG-PRODUCT">
+								<img th:src="@{'/customer/images/' + ${item.image}}" alt="IMG-PRODUCT">
 							</div>
 
 							<div class="block2-txt flex-w flex-t p-t-14">

@@ -44,7 +44,7 @@
                   <select th:field="*{category}"  class="form-control form-control-user" id="category">
                     <option th:value="null">Select Category</option>
                     <option th:each="category : ${categories}"
-                            th:value="${category.id}"
+                            th:value="${category}"
                             th:text="${category.name}"></option>
                   </select>
                   <div th:if="${error}">

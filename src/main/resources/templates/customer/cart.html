@@ -50,7 +50,7 @@
 											<td class="column-1">
 												<button type="submit" name="action" value="delete">
 													<div class="how-itemcart1">
-														<img th:src="@{'data:image/jpeg;base64,' + ${item.product.image}}" alt="IMG">
+														<img th:src="@{'/customer/images/' + ${item.product.image}}" alt="IMG">
 													</div>
 												</button>
 											</td>

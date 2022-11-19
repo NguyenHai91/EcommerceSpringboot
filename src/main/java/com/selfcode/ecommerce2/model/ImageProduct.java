@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -19,8 +20,6 @@ public class ImageProduct {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Lob
-  @Column(columnDefinition = "MEDIUMBLOB")
   private String name;
 
   @ManyToOne

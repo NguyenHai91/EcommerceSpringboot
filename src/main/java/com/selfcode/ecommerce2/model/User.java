@@ -1,6 +1,7 @@
 package com.selfcode.ecommerce2.model;
 
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.sql.Blob;
@@ -31,9 +32,7 @@ public class User {
 
   private String password;
 
-  @Lob
-  @Column(columnDefinition = "MEDIUMBLOB")
-  private Blob icon;
+  private String icon;
 
   private String country;
 

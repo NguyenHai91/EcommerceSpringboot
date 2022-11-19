@@ -32,8 +32,7 @@ public class UserDto {
   @Size(min = 3, max = 20, message = "re-password not same password")
   private String re_password;
 
-  @Lob
-  private Blob icon;
+  private String icon;
 
   private String country;
 
