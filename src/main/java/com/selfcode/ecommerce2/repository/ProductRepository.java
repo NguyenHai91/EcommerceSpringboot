@@ -5,8 +5,11 @@ import com.selfcode.ecommerce2.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,8 +30,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
   @Query(value = "select * from products p inner join category c on c.id = p.category_id where p.category_id = ?1 order by p.id desc limit 12", nativeQuery = true)
   List<Product> getRelatedProducts(Long categoryId);
 
+  @Modifying
+  @Transactional
+  @Query(value = "update Product p set p.currentQuantity = :quantity where p.id=:id ")
+  void updateQuantity(@Param("id") Long id, @Param("quantity") int quantity);
+
   @Query("select p from Product p where p.category.id = ?1")
   List<Product> getProductsByCategoryId(Long categoryId);
+
+  @Query(value = "select * from products p where p.category_id=?1 order by p.views desc limit ?2 offset ?3", nativeQuery = true)
+  List<Product> getProductsByCategoryId(Long idCategory, int limit, int offset);
 
   @Query("select p from Product p where p.is_actived = true and p.is_deleted = false order by p.costPrice desc")
   List<Product> sortProductHighPrice();

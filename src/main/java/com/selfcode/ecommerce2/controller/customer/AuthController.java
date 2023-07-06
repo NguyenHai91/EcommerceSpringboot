@@ -1,7 +1,9 @@
 package com.selfcode.ecommerce2.controller.customer;
 
 import com.selfcode.ecommerce2.dto.UserDto;
+import com.selfcode.ecommerce2.model.Role;
 import com.selfcode.ecommerce2.model.User;
+import com.selfcode.ecommerce2.service.RoleService;
 import com.selfcode.ecommerce2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Controller
@@ -21,6 +25,9 @@ public class AuthController {
 
   @Autowired
   private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+  @Autowired
+  RoleService roleService;
 
   @GetMapping("/login")
   public String login(Model model, Principal principal) {
@@ -33,7 +40,9 @@ public class AuthController {
 
   @GetMapping("/register")
   public String register(Model model) {
+    List<Role> roles = roleService.getAll();
     model.addAttribute("customerDto", new UserDto());
+    model.addAttribute("roles", roles);
     return "customer/register";
   }
 
@@ -66,6 +75,6 @@ public class AuthController {
       model.addAttribute("error", "Server have problem, please try again");
       model.addAttribute("customerDto", customerDto);
     }
-    return "customer/register";
+    return "redirect:/login";
   }
 }

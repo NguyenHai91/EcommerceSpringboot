@@ -50,7 +50,8 @@
                 <tr>
                   <th>#</th>
                   <th>Name</th>
-                  <th>Is_actived</th>
+                  <th>Parent Id</th>
+                  <th>Actived</th>
                   <th>Actions</th>
                 </tr>
                 </thead>
@@ -58,14 +59,18 @@
                 <tr>
                   <th>#</th>
                   <th>Name</th>
-                  <th>Is_actived</th>
+                  <th>Parent Id</th>
+                  <th>Actived</th>
                   <th>Actions</th>
                 </tr>
                 </tfoot>
                 <tbody>
                 <tr th:each="category : ${categories}">
                   <td scope="row" th:text="${category.id}"></td>
-                  <td th:text="${category.name}"></td>
+                  <td>[[${category.name}]]</td>
+                  <td>
+                    <span>[[${category.parentCategory?.name}]]</span>
+                  </td>
                   <td th:text="${category.is_actived}"></td>
                   <td>
                     <a th:href="@{/admin/edit-category/{id} (id = ${category.id})}" class="btn btn-primary">edit</a>

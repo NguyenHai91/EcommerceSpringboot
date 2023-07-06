@@ -38,7 +38,7 @@ public class ProductController {
 
   @GetMapping("/features")
   public String featuresProducts(Model model) {
-    List<Product> featuresProducts = productService.getAllProducts();
+    List<Product> featuresProducts = productService.getFeatureProducts();
     List<Category> categories = categoryService.findAllByActivated();
     model.addAttribute("categories", categories);
     model.addAttribute("products", featuresProducts);
@@ -64,7 +64,7 @@ public class ProductController {
     model.addAttribute("products", products);
     model.addAttribute("category", category);
     model.addAttribute("categories", categories);
-    return "customer/products";
+    return "customer/products_category";
   }
 
   @GetMapping("/products/high-price")

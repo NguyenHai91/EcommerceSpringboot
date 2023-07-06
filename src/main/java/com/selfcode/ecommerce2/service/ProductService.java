@@ -19,6 +19,8 @@ public interface ProductService {
 
   Product update(ProductDto productDto, MultipartFile imageProduct, MultipartFile[] extraImages);
 
+  void updateQuantity(Product product, int num);
+
   void increaseViewsProduct(Long id);
 
   void deleteById(Long id);
@@ -39,9 +41,13 @@ public interface ProductService {
 
   List<Product> listViewProducts();
 
+  List<Product> getFeatureProducts();
+
   List<Product> getRelatedProducts(Long categoryId);
 
   List<Product> getProductsByCategoryId(Long categoryId);
+
+  List<Product> getProductsByCategoryId(Long categoryId, int limit, int offset);
 
   List<Product> sortProductHighPrice();
 

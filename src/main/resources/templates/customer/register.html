@@ -15,49 +15,78 @@
     <div class="col-4"></div>
     <div class="col-4">
       <h2 class="text-center">Register</h2>
-      <div th:if = "${error}" class="text-center alert alert-danger">
+      <div th:if = "${error}" class="text-center alert alert-danger p-tb-10">
         <p th:text="${error}"></p>
       </div>
-      <div th:if = "${username}" class="text-center alert-warning">
+      <div th:if = "${username}" class="text-center alert-danger p-tb-10">
         <p th:text="${username}"></p>
       </div>
-      <div th:if = "${password}" class="text-center alert-warning">
+      <div th:if = "${password}" class="text-center alert-danger p-tb-10">
         <p th:text="${password}"></p>
       </div>
-      <div th:if = "${success}" class="text-center alert-success">
+      <div th:if = "${success}" class="text-center alert-success p-tb-10">
         <p th:text="${success}"></p>
       </div>
       <form class="register-form form mt-2" th:action="@{/register}" method="post" th:object="${customerDto}">
         <div class="form-outline mt-2">
           <input class="form-control" type="text" th:field = "*{firstName}" placeholder="first name" name="">
         </div>
+
         <div class="alert alert-danger" th:if="${#fields.hasErrors('firstName')}"
-             th:errors = "*{firstName}"
-        ></div>
+             th:errors = "*{firstName}">
+        </div>
+
         <div class="form-outline mt-2">
           <input class="form-control" type="text" th:field = "*{lastName}" placeholder="last name" name="">
         </div>
+
         <div class="alert alert-danger mt-2" th:if="${#fields.hasErrors('lastName')}"
-             th:errors = "*{lastName}"
-        ></div>
-        <div class="form-outline mt-2">
-          <input class="form-control" type="email" th:field = "*{username}" placeholder="email" name="">
+             th:errors = "*{lastName}">
         </div>
+
+        <div class="form-outline mt-2">
+          <input class="form-control" type="text" th:field = "*{username}" placeholder="username" name="">
+        </div>
+
+        <div class="form-outline mt-2">
+          <input class="form-control" type="email" th:field = "*{email}" placeholder="email" name="">
+        </div>
+
         <div class="form-outline mt-2">
           <input class="form-control" type="text" th:field = "*{phone}" placeholder="phone" name="">
         </div>
+
+        <div class="form-outline mt-2">
+          <input type="text"  th:field="*{address}" class="form-control " placeholder="Address">
+        </div>
+
         <div class="form-outline mt-2">
           <input class="form-control" type="password" th:field = "*{password}" placeholder="password" name="">
         </div>
+
         <div class="alert alert-danger mt-2" th:if="${#fields.hasErrors('password')}"
-             th:errors = "*{password}"
-        ></div>
+             th:errors = "*{password}">
+        </div>
         <div class="form-outline mt-2">
           <input class="form-control" type="password" th:field = "*{re_password}" placeholder="verify password" name="">
         </div>
+
+        <div class="form-outline mt-2">
+          <label>Avatar</label>
+          <input class=""
+                 type="file"
+                 accept="image/jpeg"
+                 th:field="*{icon}"
+                 name="thumbnail" />
+          <div th:if="${#fields.hasErrors('icon')}">
+            <p th:errors="*{icon}" class="alert alert-danger"></p>
+          </div>
+        </div>
+
         <div class="form-outline mt-2">
           <p class="link link-login small">Do You already have an account? <a th:href="@{/login}"> Sign in now </a></p>
         </div>
+
         <div class="form-outline text-right mt-3">
           <button class="btn btn-primary" type="submit">submit</button>
         </div>

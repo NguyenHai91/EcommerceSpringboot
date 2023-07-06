@@ -33,6 +33,11 @@ public class CartItem {
   private boolean active = true;
 
   public double getTotalPrice() {
-    return Math.ceil(totalPrice);
+    return Math.round(totalPrice * 100)/100.00;
+  }
+
+  public double getTotalTax() {
+    double totalTax = (quantity * product.getSalePrice() * product.getTax())/100;
+    return Math.round(totalTax * 100)/100.00;
   }
 }

@@ -22,16 +22,9 @@
 		</div>
 
 
-	<!-- Shoping Cart -->
-	<section class="main bg0 p-t-75 p-b-85">
+	<!-- wishlist -->
+	<section class="wishlist main bg0 p-t-75 p-b-85" id="wishlist">
 		<div class="container">
-			<div class="row" th:if="${check}">
-				<div class="col-lg-9 col-xl-7 m-lr-auto m-b-50">
-					<div class="m-l-25 m-r--38 m-lr-0-xl">
-						<div>Not found item in wishlist</div>
-					</div>
-				</div>
-			</div>
 			<div class="row"  th:if="${wishlist}">
 				<div class="col-lg-9 col-xl-8 m-lr-auto m-b-50">
 					<div class="m-l-25 m-r--20 m-lr-0-xl">
@@ -52,16 +45,23 @@
 												</button>
 											</td>
 										</form>
-										<td class="column-2" th:text="${item.product.name}"></td>
-										<td class="column-3" th:text="'$' + ${item.product.costPrice}"></td>
-
+										<td class="column-2">
+											<a class="product-name" th:href="@{/product/detail/{id} (id=${item.product.id})}" th:text="${item.product.name}"></a>
+										</td>
+										<td class="column-3" th:text="'$' + ${item.product.salePrice}"></td>
 								</tr>
 							</table>
 						</div>
-
 					</div>
 				</div>
+			</div>
 
+			<div class="row" th:if="${check}">
+				<div class="col-lg-9 col-xl-7 m-lr-auto m-b-50">
+					<div class="m-l-25 m-r--38 m-lr-0-xl">
+						<div>wishlist is empty!</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>

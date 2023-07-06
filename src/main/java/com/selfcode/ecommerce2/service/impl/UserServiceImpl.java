@@ -9,7 +9,10 @@ import com.selfcode.ecommerce2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -18,6 +21,16 @@ public class UserServiceImpl implements UserService {
 
   @Autowired
   private RoleRepository roleRepository;
+
+  @Override
+  public List<User> getAll() {
+    return userRepository.findAll();
+  }
+
+  @Override
+  public User getById(Long id) {
+      return  userRepository.findById(id).get();
+  }
 
   @Override
   public User findByUsername(String username) {
@@ -30,8 +43,13 @@ public class UserServiceImpl implements UserService {
     user.setFirstName(userDto.getFirstName());
     user.setLastName(userDto.getLastName());
     user.setUsername(userDto.getUsername());
+    user.setEmail(userDto.getEmail());
+    user.setPhoneNumber(userDto.getPhone());
+    user.setAddress(userDto.getAddress());
+    user.setIcon(userDto.getIcon());
     user.setPassword(userDto.getPassword());
     user.setRoles(Arrays.asList(roleRepository.findByName("CUSTOMER")));
+    user.setActived(true);
     return userRepository.save(user);
   }
 
@@ -41,9 +59,25 @@ public class UserServiceImpl implements UserService {
     user.setFirstName(userDto.getFirstName());
     user.setLastName(userDto.getLastName());
     user.setUsername(userDto.getUsername());
+    user.setEmail(userDto.getEmail());
+    user.setPhoneNumber(userDto.getPhone());
+    user.setAddress(userDto.getAddress());
+    user.setIcon(userDto.getIcon());
     user.setPassword(userDto.getPassword());
-    user.setRoles(Arrays.asList(roleRepository.findByName("ADMIN")));
+    user.setRoles(userDto.getRoles());
+    user.setActived(true);
     return userRepository.save(user);
+  }
+
+  public void activeUser(Long id, boolean actived) {
+    userRepository.activeUser(id, actived);
+  }
+
+  @Override
+  public void delete(Long id) {
+    User user = userRepository.getById(id);
+    if (user != null)
+      userRepository.delete(user);
   }
 
   @Override

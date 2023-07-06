@@ -26,9 +26,9 @@ public class ProductAdminController {
 
   @GetMapping("/admin/products")
   public String products(Model model, Principal principal) {
-//    if (principal == null) {
-//      return "redirect:/login";
-//    }
+    if (principal == null) {
+      return "redirect:/login";
+    }
     List<ProductDto> productDtoList = productService.findAll();
     model.addAttribute("title", "Products");
     model.addAttribute("products", productDtoList);
@@ -38,9 +38,9 @@ public class ProductAdminController {
 
   @GetMapping("/admin/add-product")
   public String addProduct(Model model, Principal principal) {
-//    if (principal == null) {
-//      return "redirect:/login";
-//    }
+    if (principal == null) {
+      return "redirect:/login";
+    }
     List<Category> categoryList = categoryService.findAll();
     model.addAttribute("title", "Add Product");
     model.addAttribute("newProduct", new ProductDto());
@@ -116,9 +116,9 @@ public class ProductAdminController {
 
   @GetMapping("/admin/products/{pageNo}")
   public String productsPage(@PathVariable("pageNo") int pageNo, Model model, Principal principal) {
-//    if (principal == null) {
-//      return "redirect:/login";
-//    }
+    if (principal == null) {
+      return "redirect:/login";
+    }
     Page<ProductDto> products = productService.pageProducts(pageNo);
     model.addAttribute("title", "Products");
     model.addAttribute("size", products.getSize());
@@ -130,9 +130,9 @@ public class ProductAdminController {
 
   @GetMapping("/admin/search-result/{pageNo}")
   public String searchProducts(@PathVariable("pageNo") int pageNo, @RequestParam("keyword") String keyword, Model model, Principal principal) {
-//    if (principal == null) {
-//      return "redirect:/login";
-//    }
+    if (principal == null) {
+      return "redirect:/login";
+    }
     Page<ProductDto> products = productService.searchProducts(pageNo, keyword);
     model.addAttribute("title", "Products");
     model.addAttribute("size", products.getSize());

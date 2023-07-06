@@ -55,7 +55,7 @@
               <div class="form-group row">
                 <div class="col-6 mb-3 mb-sm-0">
                   <input type="text" th:field="*{name}"  class="form-control form-control-user" id="name"
-                         placeholder="name product">
+                         placeholder="name">
                   <div th:if="${error}">
                     <p th:text="${error}" class="alert alert-danger"></p>
                   </div>
@@ -64,7 +64,7 @@
               <div class="form-group row">
                 <div class="col-6 mb-3 mb-sm-0">
                   <input type="text" th:field="*{description}"  class="form-control form-control-user" id="description"
-                         placeholder="name description">
+                         placeholder="description">
                   <div th:if="${error}">
                     <p th:text="${error}" class="alert alert-danger"></p>
                   </div>
@@ -90,8 +90,8 @@
               </div>
               <div class="form-group row">
                 <div class="col-6 mb-3 mb-sm-0">
-                  <input type="text" th:field="*{currentQuantity}"  class="form-control form-control-user" id="currentQuantity"
-                         placeholder="current quantity">
+                  <input type="text" th:field="*{quantity}"  class="form-control form-control-user" id="currentQuantity"
+                         placeholder="quantity">
                   <div th:if="${error}">
                     <p th:text="${error}" class="alert alert-danger"></p>
                   </div>

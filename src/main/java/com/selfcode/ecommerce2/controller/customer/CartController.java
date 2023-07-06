@@ -12,10 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
 import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class CartController {
@@ -31,57 +28,54 @@ public class CartController {
   @Autowired
   ProductService productService;
 
-  @GetMapping("/cart")
-  public String cart(Model model, Principal principal, HttpSession session) {
+  public Cart getCartExisting(Principal principal, HttpSession session) {
     Cart cart = null;
-    if (principal == null) {
-      if (session.getAttribute("cart") != null) {
-        Long cartId = (Long) session.getAttribute("cart");
-        cart = cartService.getCartById(cartId).get();
-        if (cart != null && cart.getCartItem().size() > 0) {
-          Double subTotal = Math.ceil(cart.getTotalPrices());
-          model.addAttribute("subTotal", subTotal);
-          model.addAttribute("totalItem", cart.getTotalItems());
-          model.addAttribute("cart", cart);
-          model.addAttribute("username", "");
-          return "customer/cart";
-        }
-      }
-      model.addAttribute("check", "No item in cart");
-      model.addAttribute("subTotal", 0.0);
-      model.addAttribute("totalItem", 0);
-      model.addAttribute("username", "");
-      return "customer/cart";
-    }
 
     if (principal != null) {
       User customer = userService.findByUsername(principal.getName());
       cart = customer.getCart();
-      if (cart != null && cart.getCartItem().size() > 0) {
-        model.addAttribute("subTotal", cart.getTotalPrices());
-        session.setAttribute("cart", cart.getId());
-        model.addAttribute("totalItem", cart.getTotalItems());
-        model.addAttribute("username", principal.getName());
-        model.addAttribute("cart", cart);
-        return "customer/cart";
-      }
-    } else {
-      if (session.getAttribute("cart") != null) {
-        Long cartId = (Long) session.getAttribute("cart");
-        cart = cartService.getCartById(cartId).get();
-        if (cart != null && cart.getCartItem().size() > 0) {
-          model.addAttribute("subTotal", cart.getTotalPrices());
-          model.addAttribute("totalItem", cart.getTotalItems());
-          model.addAttribute("username", principal.getName());
-          model.addAttribute("cart", cart);
-          return "customer/cart";
-        }
-      }
+      return cart;
     }
-    model.addAttribute("check", "No item in cart");
-    model.addAttribute("subTotal", 0.0);
+
+    if (session.getAttribute("cart") != null) {
+      Long cartId = (Long) session.getAttribute("cart");
+      if (cartService.getCartById(cartId).isPresent()) {
+        cart = cartService.getCartById(cartId).get();
+      }
+      return cart;
+    }
+    return cart;
+  }
+
+  @GetMapping("/cart")
+  public String getCart(Model model, Principal principal, HttpSession session) {
+    Cart cart = this.getCartExisting(principal, session);
+    User customer = null;
+
+    if (principal != null && principal.getName() != null) {
+      customer = userService.findByUsername(principal.getName());
+    }
+
+    if (cart != null && cart.getCartItems().size() > 0) {
+      double subTotal = Math.round((cart.getTotalPrices() * 100) / 100);
+      model.addAttribute("totalItem", cart.getTotalItems());
+      model.addAttribute("cart", cart);
+
+      if (customer != null) {
+        model.addAttribute("username", principal.getName());
+      } else {
+        model.addAttribute("username", "");
+      }
+      return "customer/cart";
+    }
+
+    model.addAttribute("check", "cart is empty!");
     model.addAttribute("totalItem", 0);
-    model.addAttribute("username", principal.getName());
+    if (customer != null) {
+      model.addAttribute("username", principal.getName());
+    } else {
+      model.addAttribute("username", "");
+    }
     return "customer/cart";
   }
 
@@ -174,6 +168,11 @@ public class CartController {
 
   @GetMapping("/checkout")
   public String checkout(Model model, Principal principal, HttpSession session) {
+    Cart cart = cartService.getCartExisting(principal, session);
+    if (cart == null || cart.getCartItems().size() <= 0) {
+      return "redirect:/cart";
+    }
+
     User customer = null;
     UserDto customerDto = new UserDto();
     Order order = new Order();
@@ -184,57 +183,45 @@ public class CartController {
       }
     }
 
-    if (session.getAttribute("cart") != null) {
-      Long cartId = (Long) session.getAttribute("cart");
-      Cart cart = cartService.getCartById(cartId).get();
-      if (cart != null && cart.getCartItem().size() > 0) {
-        model.addAttribute("cart", cart);
-        model.addAttribute("customerDto", customerDto);
-        model.addAttribute("order", order);
-        return "customer/checkout";
-      }
-    }
-
-    if (customer != null) {
-      Cart cart = customer.getCart();
-      if (cart != null && cart.getCartItem().size() > 0) {
-        model.addAttribute("cart", cart);
-        model.addAttribute("customerDto", customerDto);
-        model.addAttribute("order", order);
-        return "customer/checkout";
-      }
-    }
-
-    return null;
+    model.addAttribute("cart", cart);
+    model.addAttribute("customerDto", customerDto);
+    model.addAttribute("order", order);
+    return "customer/checkout";
   }
 
   @PostMapping("/checkout")
-  public String doCheckout(@ModelAttribute("customerDto") UserDto customerDto, Model model, Principal principal, HttpSession session) {
+  public String doCheckout(@ModelAttribute("customerDto") UserDto customerDto,
+                           @ModelAttribute("order") Order order,
+                           Model model, Principal principal, HttpSession session) {
     User customer = null;
     Cart cart = null;
     if (principal != null) {
       customer = userService.findByUsername(principal.getName());
       cart = customer.getCart();
-
     } else {
       Long cartId = (Long) session.getAttribute("cart");
       cart = cartService.getCartById(cartId).get();
     }
 
-    if (customerDto == null) return null;
-
-    if (cart == null || cart.getCartItem().size() <= 0) return null;
-
-    Order order = new Order();
-    for (CartItem item: cart.getCartItem()) {
-      OrderDetail orderDetail = new OrderDetail();
-    }
-    order = orderService.saveOrder(cart);
-    if (order != null) {
-      return "redirect:/order/" + order.getId();
+    if (customerDto.validate() == false) {
+      model.addAttribute("cart", cart);
+      model.addAttribute("order", order);
+      model.addAttribute("customerDto", customerDto);
+      model.addAttribute("error", "Fields * is required");
+      return "customer/checkout";
     }
 
-    return null;
+    if (cart == null || cart.getCartItems().size() <= 0) {
+      model.addAttribute("cart", cart);
+      model.addAttribute("order", order);
+      model.addAttribute("customerDto", customerDto);
+      model.addAttribute("error", "Your cart is empty");
+      return "customer/checkout";
+    }
+
+    Order savedOrder = orderService.saveOrder(cart, order.getNotes());
+
+    return "redirect:/order/" + savedOrder.getId();
   }
 
   @GetMapping("/order/{id}")
@@ -252,18 +239,15 @@ public class CartController {
       return null;
     }
     model.addAttribute("order", order);
-
-//    List<Order> orderList = customer.getOrders();
-//    model.addAttribute("customer", customer);
-//    model.addAttribute("cart", cart);
-//    model.addAttribute("orders", orderList);
     return "customer/order";
   }
 
   @PostMapping("/order/accept/{id}")
-  public String saveOrder(@PathVariable("id") Long id, Model model, Principal principal) {
+  public String saveOrder(@PathVariable("id") Long id, Model model, Principal principal, HttpSession session) {
     try {
-      orderService.acceptOrder(id);
+      orderService.acceptOrder(id, principal, session);
+      session.removeAttribute("cart");
+      session.setAttribute("cartItems", 0);
       model.addAttribute("success", "Order success");
       return "customer/finish";
     } catch(Exception e) {

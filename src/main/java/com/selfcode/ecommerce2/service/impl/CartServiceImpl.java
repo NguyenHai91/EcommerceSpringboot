@@ -6,10 +6,15 @@ import com.selfcode.ecommerce2.model.Product;
 import com.selfcode.ecommerce2.model.User;
 import com.selfcode.ecommerce2.repository.CartItemRepository;
 import com.selfcode.ecommerce2.repository.CartRepository;
+import com.selfcode.ecommerce2.repository.ProductRepository;
 import com.selfcode.ecommerce2.service.CartService;
+import com.selfcode.ecommerce2.service.ProductService;
+import com.selfcode.ecommerce2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -18,11 +23,16 @@ import java.util.Set;
 @Service
 public class CartServiceImpl implements CartService {
   @Autowired
+  UserService userService;
+
+  @Autowired
   CartRepository cartRepository;
 
   @Autowired
   CartItemRepository cartItemRepository;
 
+  @Autowired
+  ProductService productService;
 
   @Override
   public Cart save(Cart cart) {
@@ -35,10 +45,32 @@ public class CartServiceImpl implements CartService {
   }
 
   @Override
+  public Cart getCartExisting(Principal principal, HttpSession session) {
+    Cart cart = null;
+
+    if (principal != null) {
+      User customer = userService.findByUsername(principal.getName());
+      cart = customer.getCart();
+      return cart;
+    }
+
+    if (session.getAttribute("cart") != null) {
+      Long idCart = (Long) session.getAttribute("cart");
+      if (cartRepository.findById(idCart).isPresent()) {
+        cart = cartRepository.findById(idCart).get();
+      }
+      return cart;
+    }
+    return cart;
+  }
+
+  @Override
   public Cart addItemToCart(Product product, int quantity, User user, Long cartId) {
     Cart cart = null;
     if (cartId != null) {
-      cart = cartRepository.findById(cartId).get();
+      if (cartRepository.findById(cartId).isPresent()) {
+        cart = cartRepository.findById(cartId).get();
+      }
     } else {
       if(user != null) {
         cart = user.getCart();
@@ -49,14 +81,14 @@ public class CartServiceImpl implements CartService {
       cart = new Cart();
       cart = cartRepository.save(cart);
     }
-    Set<CartItem> cartItems = cart.getCartItem();
+    Set<CartItem> cartItems = cart.getCartItems();
     CartItem cartItem = findCartItem(cartItems, product.getId());
     if (cartItems == null) {
       cartItems = new HashSet<>();
       if (cartItem == null) {
         cartItem = new CartItem();
         cartItem.setProduct(product);
-        cartItem.setTotalPrice(quantity * product.getCostPrice());
+        cartItem.setTotalPrice(quantity * product.getSalePrice());
         cartItem.setQuantity(quantity);
         cartItem.setCart(cart);
         cartItem = cartItemRepository.save(cartItem);
@@ -66,20 +98,20 @@ public class CartServiceImpl implements CartService {
       if (cartItem == null) {
         cartItem = new CartItem();
         cartItem.setProduct(product);
-        cartItem.setTotalPrice(quantity * product.getCostPrice());
+        cartItem.setTotalPrice(quantity * product.getSalePrice());
         cartItem.setQuantity(quantity);
         cartItem.setCart(cart);
         cartItem = cartItemRepository.save(cartItem);
         cartItems.add(cartItem);
       } else {
         cartItem.setQuantity(cartItem.getQuantity() + quantity);
-        cartItem.setTotalPrice(cartItem.getTotalPrice() + ( quantity * product.getCostPrice()));
+        cartItem.setTotalPrice(cartItem.getTotalPrice() + ( quantity * product.getSalePrice()));
         cartItemRepository.save(cartItem);
       }
     }
-    cart.setCartItem(cartItems);
-    int totalItems = totalItems(cart.getCartItem());
-    double totalPrice = totalPrice(cart.getCartItem());
+    cart.setCartItems(cartItems);
+    int totalItems = totalItems(cart.getCartItems());
+    double totalPrice = totalPrice(cart.getCartItems());
 
     cart.setTotalPrices(totalPrice);
     cart.setTotalItems(totalItems);
@@ -102,12 +134,12 @@ public class CartServiceImpl implements CartService {
       cart = user.getCart();
     }
 
-    Set<CartItem> cartItems = cart.getCartItem();
+    Set<CartItem> cartItems = cart.getCartItems();
 
     CartItem item = findCartItem(cartItems, product.getId());
 
     item.setQuantity(quantity);
-    item.setTotalPrice(quantity * product.getCostPrice());
+    item.setTotalPrice(quantity * product.getSalePrice());
 
     cartItemRepository.save(item);
 
@@ -131,8 +163,8 @@ public class CartServiceImpl implements CartService {
     } else {
       cart = user.getCart();
     }
-    Set<CartItem> cartItems = cart.getCartItem();
-    CartItem item = findCartItem(cartItems, product.getId());
+    Set<CartItem> cartItems = cart.getCartItems();
+    CartItem item = this.findCartItem(cartItems, product.getId());
     if (item != null) {
       cartItems.remove(item);
       cartItemRepository.delete(item);
@@ -140,11 +172,38 @@ public class CartServiceImpl implements CartService {
       double totalPrice = totalPrice(cartItems);
       int totalItems = totalItems(cartItems);
 
-      cart.setCartItem(cartItems);
+      cart.setCartItems(cartItems);
       cart.setTotalItems(totalItems);
       cart.setTotalPrices(totalPrice);
     }
     return cartRepository.save(cart);
+  }
+
+  @Override
+  public void clearCart(Long idCart, User customer) {
+    if (!cartRepository.findById(idCart).isPresent()) {
+      return;
+    }
+
+    Cart cart = cartRepository.findById(idCart).get();
+    if (cart.getCartItems().size() > 0) {
+      Set<CartItem> listCartItems = cart.getCartItems();
+      for (CartItem item: listCartItems) {
+        item = cartItemRepository.getById(item.getId());
+        Optional<Product> productData = productService.getProductById(item.getProduct().getId());
+        if (productData.isPresent()) {
+          Product product = productData.get();
+          productService.updateQuantity(product, - item.getQuantity());
+        }
+        this.deleteItemFromCart(item.getProduct(), customer, cart.getId());
+      }
+    }
+    cartRepository.delete(cart);
+  }
+
+  @Override
+  public void deleteCart(Cart cart) {
+    cartRepository.delete(cart);
   }
 
   private CartItem findCartItem(Set<CartItem> cartItems, Long productId) {
@@ -153,7 +212,7 @@ public class CartServiceImpl implements CartService {
     }
     CartItem cartItem = null;
     for (CartItem item : cartItems) {
-      if (item.getProduct().getId() == productId) {
+      if (item.getProduct().getId().equals(productId)) {
         cartItem = item;
       }
     }
@@ -175,4 +234,6 @@ public class CartServiceImpl implements CartService {
     }
     return totalPrice;
   }
+
+
 }

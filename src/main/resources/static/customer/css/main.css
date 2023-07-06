@@ -365,6 +365,22 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   position: relative;
 }
 
+#cart .product-name {
+  color: #222;
+}
+
+#cart .product-name:hover {
+  color: #717fe0;
+}
+
+#wishlist .product-name {
+  color: #222;
+}
+
+#wishlist .product-name:hover {
+  color: #717fe0;
+}
+
 #user {
 }
 

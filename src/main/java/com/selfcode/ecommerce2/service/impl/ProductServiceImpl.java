@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,23 +73,25 @@ public class ProductServiceImpl implements ProductService {
         if (imageUpload.uploadImage(UPLOAD_PATH_PRODUCT, imageProduct)) {
           System.out.println("Upload image success");
         }
-//        newProduct.setImage(Base64.getEncoder().encodeToString(imageProduct.getBytes()));
         newProduct.setImage(imageProduct.getOriginalFilename());
       }
 
       newProduct.setName(productDto.getName());
       newProduct.setCategory(productDto.getCategory());
       newProduct.setDescription(productDto.getDescription());
-      newProduct.setCurrentQuantity(productDto.getCurrentQuantity());
-      newProduct.setQuantity(productDto.getCurrentQuantity());
+      newProduct.setCurrentQuantity(productDto.getQuantity());
+      newProduct.setQuantity(productDto.getQuantity());
       newProduct.setViews(productDto.getViews());
       newProduct.setTax(productDto.getTax());
       newProduct.set_actived(productDto.isActived());
       newProduct.set_deleted(productDto.isDeleted());
       newProduct.setCostPrice(productDto.getCostPrice());
-      double salePrice = productDto.getCostPrice();
-      salePrice += (productDto.getCostPrice() * productDto.getTax()) / 100;
-      salePrice = Math.round(salePrice);
+      double salePrice = 0.0;
+      if (productDto.getSalePrice() == null) {
+        salePrice = productDto.getCostPrice();
+        salePrice += (productDto.getCostPrice() * 10) / 100;
+      }
+      salePrice = Math.round(salePrice * 100) / 100.0;
       newProduct.setSalePrice(salePrice);
       newProduct = productRepository.save(newProduct);
 
@@ -102,7 +103,6 @@ public class ProductServiceImpl implements ProductService {
             System.out.println("Upload image success");
           }
           ImageProduct img = new ImageProduct();
-//          img.setName(Base64.getEncoder().encodeToString(image.getBytes()));
           img.setName(image.getOriginalFilename());
           img.setProduct(newProduct);
           imageProductRepository.save(img);
@@ -157,7 +157,6 @@ public class ProductServiceImpl implements ProductService {
           imageUpload.uploadImage(UPLOAD_PATH_PRODUCT, imageProduct);
           System.out.println("Upload image success");
         }
-//        product.setImage(Base64.getEncoder().encodeToString(imageProduct.getBytes()));
         product.setImage(imageProduct.getOriginalFilename());
       }
 
@@ -167,7 +166,6 @@ public class ProductServiceImpl implements ProductService {
             System.out.println("Upload image success");
           }
           ImageProduct img = new ImageProduct();
-//          img.setName(Base64.getEncoder().encodeToString(image.getBytes()));
           img.setName(image.getOriginalFilename());
           img.setProduct(product);
           imageProductRepository.save(img);
@@ -193,6 +191,13 @@ public class ProductServiceImpl implements ProductService {
       e.printStackTrace();
       return null;
     }
+  }
+
+  @Override
+  public void updateQuantity(Product product, int num) {
+    int quantity  = product.getCurrentQuantity() + num;
+    if (quantity < 0) quantity = 0;
+    productRepository.updateQuantity(product.getId(), quantity);
   }
 
   @Override
@@ -272,6 +277,18 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
+  public List<Product> getFeatureProducts() {
+    List<Product> listProducts = new ArrayList<>();
+    List<Category> listCategories = this.categoryService.findAllByActivated();
+    for (Category category: listCategories) {
+      List<Product> products = this.productRepository.getProductsByCategoryId(category.getId(), 4, 0);
+      listProducts.addAll(products);
+    }
+    return listProducts;
+  }
+
+
+  @Override
   public List<Product> listViewProducts() {
     return productRepository.listViewProducts();
   }
@@ -284,6 +301,11 @@ public class ProductServiceImpl implements ProductService {
   @Override
   public List<Product> getProductsByCategoryId(Long categoryId) {
     return productRepository.getProductsByCategoryId(categoryId);
+  }
+
+  @Override
+  public List<Product> getProductsByCategoryId(Long categoryId, int limit, int offset) {
+    return productRepository.getProductsByCategoryId(categoryId, limit, offset);
   }
 
   @Override

@@ -19,7 +19,8 @@ public class Category {
 
   private String name;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "parent_id", referencedColumnName = "id")
   private Category parentCategory;
 
   @OneToMany(mappedBy = "parentCategory")

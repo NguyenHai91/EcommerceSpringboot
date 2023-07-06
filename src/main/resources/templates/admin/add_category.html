@@ -38,30 +38,34 @@
             <div th:if="${error}">
               <p th:text="${error}" class="alert alert-danger"></p>
             </div>
-            <form th:action="@{/admin/add-category}" th:object="${newCategory}"  method="POST" class="user">
-              <div class="form-group row">
-                <div class="col-6 mb-3 mb-sm-0">
-                  <select  id="parent" th:field="*{parentCategory}" class="form-control form-control-user"
-                            placeholder="parent category">
-                    <option th:each="category : ${categories}"
-                            th:value="${category.id}"
-                            th:text="${category.name}"></option>
-                  </select>
-                </div>
-
-                <div class="col-6 mb-3 mb-sm-0">
-                  <input type="text" th:field="*{name}"  class="form-control form-control-user" id="name"
-                         placeholder="name category">
-                  <div th:if="${error}">
-                    <p th:text="${error}" class="alert alert-danger"></p>
+            <form class="form-horizontal"
+                  th:action="@{/admin/add-category}"
+                  method="post"
+                  enctype="multipart/form-data"
+                  th:object = "${newCategory}">
+              <fieldset>
+                <div class="form-group" >
+                  <label class="col-md-4 control-label" for="categories">Parent Category</label>
+                  <div class="col-md-4">
+                    <select id="categories" th:field = "*{parentCategory}" name="categories" class="form-control">
+                      <option th:value = "null">-Select Parent Category-</option>
+                      <option th:each = "category : ${categories}"
+                              th:value = "${category.id}"
+                              th:text = "${category.name}">
+                      </option>
+                    </select>
                   </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <div class="col-6 mb-3 mb-sm-0">
-                  <button type="submit" class="btn btn-primary btn-user btn-block">Save</button>
+
+                <div class="form-group">
+                  <label class="col-md-4 control-label" for="name">Name</label>
+                  <div class="col-md-4">
+                    <input id="name" th:field = "*{name}" name="name" class="form-control input-md" required="" type="text">
+                  </div>
                 </div>
-              </div>
+
+              </fieldset>
+              <button type="submit" class="btn btn-primary">Save</button>
             </form>
           </div>
         </div>

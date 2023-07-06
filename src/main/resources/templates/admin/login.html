@@ -26,9 +26,9 @@
                   <p th:text="${param.error}" class="alert alert-danger"></p>
                 </div>
                 <div th:if="${param.logout}">
-                  <p class="alert alert-success">You has been logouted account!</p>
+                  <p class="alert alert-success">You has been logout!</p>
                 </div>
-                <form th:action="@{/admin-login}" th:object="${userDto}" th:method="POST" class="user">
+                <form th:action="@{/admin/login}" th:object="${userDto}" th:method="POST" class="user">
                   <div class="form-group">
                     <input type="email"  th:field="*{username}" class="form-control form-control-user"
                            id="username" aria-describedby="emailHelp"
@@ -61,7 +61,7 @@
                   <a class="small" th:href="@{/forgot-password}">Forgot password?</a>
                 </div>
                 <div class="text-center">
-                  <a class="small" th:href="@{/register}">Registry an account!</a>
+                  <a class="small" th:href="@{/admin/register}">Registry an account!</a>
                 </div>
               </div>
             </div>
