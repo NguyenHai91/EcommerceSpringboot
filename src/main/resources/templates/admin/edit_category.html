@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org/" xmlns:layout="https://www.thymeleaf.org/">
 
-<head th:replace="fragments :: header">
-</head>
+<head th:replace="/admin/fragments :: header"></head>
 
 <body id="page-top">
 
@@ -10,7 +9,7 @@
 <div id="wrapper">
 
   <!-- Sidebar -->
-  <ul th:replace="fragments::sidebar"></ul>
+  <ul th:replace="/admin/fragments::sidebar"></ul>
   <!-- End of Sidebar -->
 
   <!-- Content Wrapper -->
@@ -20,7 +19,7 @@
     <div id="content">
 
       <!-- Topbar -->
-      <nav th:replace="fragments::topbar"></nav>
+      <nav th:replace="/admin/fragments::topbar"></nav>
       <!-- End of Topbar -->
 
       <!-- Begin Page Content -->
@@ -38,14 +37,15 @@
             <div th:if="${error}">
               <p th:text="${error}" class="alert alert-danger"></p>
             </div>
-            <form th:action="@{/edit-category/{id} (id=${editCategory.id})}" th:object="${editCategory}"  method="POST" class="user">
+            <form th:action="@{/admin/edit-category/{id} (id=${editCategory.id})}" th:object="${editCategory}"  method="POST" class="user">
               <div class="form-group row">
                 <div class="col-6 mb-3 mb-sm-0">
-                  <select  id="parent" th:field="*{parentCategory}" class="form-control form-control-user"
-                           placeholder="parent category">
-                    <option th:each="category : ${categories}"
-                            th:value="${category.id}"
-                            th:text="${category.name}"></option>
+                  <select id="categories" th:field = "*{parentCategory}" name="categories" class="form-control">
+                    <option th:value = "null">-Select Parent Category-</option>
+                    <option th:each = "category : ${categories}"
+                            th:value = "${category.id}"
+                            th:text = "${category.name}">
+                    </option>
                   </select>
                 </div>
 
@@ -73,7 +73,7 @@
     <!-- End of Main Content -->
 
     <!-- Footer -->
-    <footer th:replace="fragments::footer"></footer>
+    <footer th:replace="/admin/fragments::footer"></footer>
     <!-- End of Footer -->
 
   </div>
@@ -83,13 +83,13 @@
 <!-- End of Page Wrapper -->
 
 <!-- Scroll to Top Button-->
-<a th:replace="fragments::scroll_top">
+<a th:replace="/admin/fragments::scroll_top">
 </a>
 
 <!-- Logout Modal-->
-<div th:replace="fragments::logout_modal"></div>
+<div th:replace="/admin/fragments::logout_modal"></div>
 
-<div th:replace="fragments::js"></div>
+<div th:replace="/admin/fragments::js"></div>
 
 <!-- Page level plugins -->
 <script th:src="@{vendor/datatables/jquery.dataTables.min.js}"></script>

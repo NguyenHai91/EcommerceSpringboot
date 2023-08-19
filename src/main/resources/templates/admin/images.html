@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head th:replace="admin/fragments::header">
+</head>
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+  <!-- Sidebar -->
+  <ul th:replace="admin/fragments::sidebar"></ul>
+  <!-- End of Sidebar -->
+
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
+
+    <!-- Main Content -->
+    <div id="content">
+
+      <!-- Topbar -->
+      <nav th:replace="admin/fragments::topbar"></nav>
+      <!-- End of Topbar -->
+
+      <!-- Begin Page Content -->
+      <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <h1 class="h3 mb-2 text-gray-800">Categories</h1>
+        <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
+          For more information about DataTables, please visit the <a target="_blank"
+                                                                     href="https://datatables.net">official DataTables documentation</a>.</p>
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DataTables Images</h6>
+            <a th:href="@{/admin/product/add-image}" class="btn btn-success btn-icon-split right">
+              <span class="icon text-white-50">
+                  <i class="fas fa-check"></i>
+              </span>
+              <span class="text">Gallery Images</span>
+            </a>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Image</th>
+                  <th>Product Id</th>
+                  <th>Actions</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Image</th>
+                  <th>Product Id</th>
+                  <th>Actions</th>
+                </tr>
+                </tfoot>
+                <tbody>
+                <tr th:each="image : ${images}">
+                  <td scope="row" th:text="${image.id}"></td>
+                  <td>[[${image.name}]]</td>
+                  <td ><img style="height: 40px; width: 40px;" th:src = "*{'/customer/images/' + {image.name}}"></td>
+                  <td scope="row" th:text="${image.product.id}"></td>
+                  <td>
+                    <a th:href="@{/admin/image/delete/{id} (id = ${image.id})}" class="btn btn-danger">delete</a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- /.container-fluid -->
+
+    </div>
+    <!-- End of Main Content -->
+
+    <!-- Footer -->
+    <footer th:replace="admin/fragments::footer"></footer>
+    <!-- End of Footer -->
+
+  </div>
+  <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a th:replace="admin/fragments::scroll_top"></a>
+
+<!-- Logout Modal-->
+<div th:replace="admin/fragments::logout_modal">
+</div>
+
+<div  th:replace="admin/fragments::js"></div>
+
+<!-- Page level plugins -->
+<script th:src="@{/admin/vendor/datatables/jquery.dataTables.min.js}"></script>
+<script th:src="@{/admin/vendor/datatables/dataTables.bootstrap4.min.js}"></script>
+
+<!-- Page level custom scripts -->
+<script th:src="@{/admin/js/demo/datatables-demo.js}"></script>
+
+</body>
+
+</html>

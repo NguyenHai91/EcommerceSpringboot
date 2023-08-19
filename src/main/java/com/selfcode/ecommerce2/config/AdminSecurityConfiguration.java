@@ -39,14 +39,16 @@ public class AdminSecurityConfiguration extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.authenticationProvider(authenticationProvider1());
     http.csrf().disable();
+    http.headers().frameOptions().disable();
     http.authorizeRequests().antMatchers("/").permitAll();
+    http.authorizeRequests().antMatchers("/h2/**").permitAll();
     http.antMatcher("/admin/**")
-        .authorizeRequests().anyRequest().hasAuthority("ADMIN")
+        .authorizeRequests().anyRequest().permitAll()
         .and()
           .formLogin()
           .loginPage("/admin/login")
           .loginProcessingUrl("/admin/login")
-          .defaultSuccessUrl("/admin/home")
+          .defaultSuccessUrl("/admin")
           .permitAll()
         .and()
           .logout()

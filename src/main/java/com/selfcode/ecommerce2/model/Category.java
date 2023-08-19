@@ -26,7 +26,7 @@ public class Category {
   @OneToMany(mappedBy = "parentCategory")
   private Set<Category> childCategories;
 
-  private boolean is_deleted;
+  private boolean is_deleted = false;
 
   private boolean is_actived;
 

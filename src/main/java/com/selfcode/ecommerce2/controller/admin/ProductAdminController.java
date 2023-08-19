@@ -45,7 +45,7 @@ public class ProductAdminController {
     model.addAttribute("title", "Add Product");
     model.addAttribute("newProduct", new ProductDto());
     model.addAttribute("categories", categoryList);
-    return "admin/add-product";
+    return "admin/add_product";
   }
 
   @PostMapping("/admin/add-product")
@@ -71,14 +71,14 @@ public class ProductAdminController {
     model.addAttribute("title", "Update Product");
     model.addAttribute("productDto", updateProduct);
     model.addAttribute("categories", categories);
-    return "admin/update-product";
+    return "admin/update_product";
   }
 
   @PostMapping("/admin/update-product/{id}")
   public String editProduct(@PathVariable("id") Long id,
                             @ModelAttribute("productDto") ProductDto productDto,
                             @RequestParam("imageProduct") MultipartFile imageProduct,
-                            @RequestParam(value = "extraImages") MultipartFile[] extraImages,
+                            @RequestParam(value = "extra_images") MultipartFile[] extraImages,
                             RedirectAttributes redirect) {
     try {
       productService.update(productDto, imageProduct, extraImages);

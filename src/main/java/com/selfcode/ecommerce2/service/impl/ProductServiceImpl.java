@@ -160,7 +160,7 @@ public class ProductServiceImpl implements ProductService {
         product.setImage(imageProduct.getOriginalFilename());
       }
 
-      if (extraImages != null) {
+      if (extraImages != null & extraImages.length > 0) {
         for (MultipartFile image: extraImages) {
           if (imageUpload.uploadImage(UPLOAD_PATH_PRODUCT, image)) {
             System.out.println("Upload image success");
@@ -176,9 +176,13 @@ public class ProductServiceImpl implements ProductService {
       product.setCategory(productDto.getCategory());
       product.setDescription(productDto.getDescription());
       product.setCostPrice(productDto.getCostPrice());
-      double salePrice = productDto.getCostPrice();
-      salePrice += (productDto.getCostPrice() * productDto.getTax()) / 100;
-      salePrice = Math.round(salePrice);
+      double salePrice = 0.0;
+      if (productDto.getSalePrice() == null) {
+        salePrice = product.getSalePrice();
+      } else {
+        salePrice = productDto.getSalePrice();
+      }
+      salePrice = Math.round(salePrice * 100) / 100.0;
       product.setSalePrice(salePrice);
       product.setCurrentQuantity(productDto.getCurrentQuantity());
       product.setQuantity(productDto.getQuantity());

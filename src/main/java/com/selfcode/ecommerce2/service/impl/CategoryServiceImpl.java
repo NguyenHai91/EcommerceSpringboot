@@ -28,8 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
   @Override
   public Category save(Category category) {
     try {
-      Category newCategory = new Category(category.getName());
-      return categoryRepository.save(newCategory);
+      return categoryRepository.save(category);
     } catch (Exception e) {
       e.printStackTrace();
       return null;
@@ -46,8 +45,6 @@ public class CategoryServiceImpl implements CategoryService {
     Category editCategory = categoryRepository.getById(category.getId());
     editCategory.setName(category.getName());
     editCategory.setParentCategory(category.getParentCategory());
-    editCategory.set_actived(category.is_actived());
-    editCategory.set_deleted(category.is_deleted());
     return categoryRepository.save(editCategory);
   }
 

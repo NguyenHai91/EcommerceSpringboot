@@ -1,6 +1,5 @@
 package com.selfcode.ecommerce2.controller.admin;
 
-
 import com.selfcode.ecommerce2.model.User;
 import com.selfcode.ecommerce2.service.UserService;
 import com.selfcode.ecommerce2.service.impl.CategoryServiceImpl;
@@ -50,5 +49,6 @@ public class HomeAdminController {
     model.addAttribute("users", users);
     return "admin/users";
   }
+
 
 }

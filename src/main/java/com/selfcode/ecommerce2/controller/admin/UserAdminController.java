@@ -5,6 +5,7 @@ import com.selfcode.ecommerce2.model.Role;
 import com.selfcode.ecommerce2.model.User;
 import com.selfcode.ecommerce2.service.RoleService;
 import com.selfcode.ecommerce2.service.impl.UserServiceImpl;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class UserAdminController {
   @Autowired
   UserServiceImpl userService;
 
+  @Autowired
   BCryptPasswordEncoder bCryptPasswordEncoder;
 
   @Autowired
@@ -43,6 +46,7 @@ public class UserAdminController {
 
   @GetMapping("/admin/user/add")
   public String register(Model model) {
+    this.mockRoles();
     List<Role> roles = roleService.getAll();
     model.addAttribute("title", "Add User");
     model.addAttribute("roles", roles);
@@ -109,4 +113,43 @@ public class UserAdminController {
     model.addAttribute("title", "Forget password");
     return "/admin/forgot-password";
   }
+
+  private void mockRoles() {
+    Role roleAdmin = roleService.findByName("ADMIN");
+    Role roleUser = roleService.findByName("USER");
+    if (roleAdmin == null) {
+      roleAdmin = new Role();
+      roleAdmin.setName("ADMIN");
+      roleService.createRole(roleAdmin);
+    }
+    if (roleUser == null) {
+      roleUser = new Role();
+      roleUser.setName("USER");
+      roleService.createRole(roleUser);
+    }
+  }
+
+  private void mockUserAdmin() {
+    UserDto admin = new UserDto();
+    admin.setUsername("admin@gmail.com");
+    admin.setEmail("admin@gmail.com");
+    admin.setPassword("admin");
+    admin.setRe_password("admin");
+    admin.setFirstName("admin");
+    admin.setLastName("nguyen");
+    admin.setPhone("0909123789");
+
+    User user = userService.findByUsername(admin.getUsername());
+    if (user != null) return;
+
+    this.mockRoles();
+    Role roleAdmin = roleService.findByName("ADMIN");
+    List<Role> roles = new ArrayList<>();
+    roles.add(roleAdmin);
+    admin.setRoles(roles);
+    admin.setPassword(bCryptPasswordEncoder.encode(admin.getPassword()));
+
+    userService.save(admin);
+  }
+
 }

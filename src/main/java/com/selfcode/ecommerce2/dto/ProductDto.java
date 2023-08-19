@@ -17,13 +17,13 @@ public class ProductDto {
 
   private String name;
 
-  private String description;
+  private String description = "Nulla eget sem vitae eros pharetra viverra. Nam vitae luctus ligula. Mauris consequat ornare feugiat.";
 
   private Double costPrice;
 
   private Double salePrice;
 
-  private int quantity;
+  private int quantity = 100;
 
   private int currentQuantity;
 

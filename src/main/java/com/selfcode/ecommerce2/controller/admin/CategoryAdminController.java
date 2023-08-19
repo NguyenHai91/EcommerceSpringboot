@@ -38,6 +38,7 @@ public class CategoryAdminController {
   @PostMapping("/admin/add-category")
   public String addCategory(@ModelAttribute("newCategory") Category newCategory, RedirectAttributes redirect, BindingResult result, Model model) {
     try {
+      newCategory.set_actived(true);
       categoryService.save(newCategory);
       redirect.addFlashAttribute("success", "Category created success");
     } catch (Exception e) {

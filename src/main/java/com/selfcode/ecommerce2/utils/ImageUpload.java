@@ -13,6 +13,7 @@ public class ImageUpload {
 
   public boolean uploadImage(String uploadFolder, MultipartFile imageProduct){
     boolean isUpload = false;
+    if (this.checkExisted(uploadFolder, imageProduct)) return true;
     try {
       Files.copy(imageProduct.getInputStream(),
           Paths.get( uploadFolder + File.separator, imageProduct.getOriginalFilename()),
