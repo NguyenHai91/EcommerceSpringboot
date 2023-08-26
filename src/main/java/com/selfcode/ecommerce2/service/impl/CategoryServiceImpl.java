@@ -71,13 +71,20 @@ public class CategoryServiceImpl implements CategoryService {
 
   @Override
   public List<CategoryDto> getCategoryAndProduct() {
-    List<CategoryDto> categories = categoryRepository.getCategoryAndProduct();
-    return categories;
+    List<Category> listCategories = categoryRepository.findAllByActivated();
+    List<CategoryDto> listCategoriesDto = new ArrayList<>();
+    for (Category category: listCategories) {
+      Long count = productRepository.countProductsByCategoryId(category.getId());
+      CategoryDto categoryDto = new CategoryDto(category);
+      categoryDto.setNumberOfProduct(count);
+      listCategoriesDto.add(categoryDto);
+    }
+    return listCategoriesDto;
   }
 
   @Override
   public List<Category> getMainCategories() {
-    List<Category> categories = categoryRepository.findAll();
+    List<Category> categories = categoryRepository.getRootCategories();
     List<Category> mainCategories = new ArrayList<>();
     for (Category category : categories) {
       if (category.getParentCategory() == null) {

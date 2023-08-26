@@ -30,6 +30,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
   @Query(value = "select * from products p inner join category c on c.id = p.category_id where p.category_id = ?1 order by p.id desc limit 12", nativeQuery = true)
   List<Product> getRelatedProducts(Long categoryId);
 
+  @Query("select count(p) from Product p where p.category.id = :categoryId and p.is_actived = true")
+  Long countProductsByCategoryId(@Param("categoryId") Long categoryId);
+
   @Modifying
   @Transactional
   @Query(value = "update Product p set p.currentQuantity = :quantity where p.id=:id ")

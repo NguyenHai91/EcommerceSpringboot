@@ -30,7 +30,7 @@ public class ProductController {
     } else {
       products = productService.getAllProducts();
     }
-    List<Category> categories = categoryService.findAllByActivated();
+    List<Category> categories = categoryService.getMainCategories();
     model.addAttribute("categories", categories);
     model.addAttribute("products", products);
     return "customer/products";
@@ -39,7 +39,7 @@ public class ProductController {
   @GetMapping("/features")
   public String featuresProducts(Model model) {
     List<Product> featuresProducts = productService.getFeatureProducts();
-    List<Category> categories = categoryService.findAllByActivated();
+    List<Category> categories = categoryService.getMainCategories();
     model.addAttribute("categories", categories);
     model.addAttribute("products", featuresProducts);
     return "customer/products";

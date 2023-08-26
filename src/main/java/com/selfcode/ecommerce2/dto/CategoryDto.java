@@ -14,4 +14,10 @@ public class CategoryDto {
   private String name;
   private Category parentCategory;
   private Long numberOfProduct;
+
+  public CategoryDto (Category category) {
+    this.id = category.getId();
+    this.name = category.getName();
+    this.parentCategory = category.getParentCategory();
+  }
 }
